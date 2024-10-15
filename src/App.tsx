@@ -39,6 +39,8 @@ import Unique3 from './pages/Unique3';
 import Tsf from './pages/Tsf'
 import Congrats from './pages/Congrats';
 import Unlock from './pages/Unlock';
+import Bg from './pages/sfmed_bg';
+import SFmedi from './pages/sfmed';
 
 function App() {
  
@@ -52,8 +54,10 @@ function App() {
 
           <Route path = "/engmed-tsf" element = {<Tsf/>} />
           
-         
+          <Route  path="/sfmedi-bg"  element = {< Bg/>} />
+
           <Route  path="/sfmedi-unlock"  element = {< Unlock/>} />
+          <Route  path="/sfmedi"  element = {< SFmedi/>} />
 
           <Route path = "/" element = {<VeryNew2 />} />
           <Route path="/terms-and-conditions" element={<Terms />} />
