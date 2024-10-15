@@ -38,6 +38,7 @@ import Unique2 from './pages/Unique2';
 import Unique3 from './pages/Unique3';
 import Tsf from './pages/Tsf'
 import Congrats from './pages/Congrats';
+import Unlock from './pages/Unlock';
 
 function App() {
  
@@ -52,6 +53,7 @@ function App() {
           <Route path = "/engmed-tsf" element = {<Tsf/>} />
           
          
+          <Route  path="/sfmedi-unlock"  element = {< Unlock/>} />
 
           <Route path = "/" element = {<VeryNew2 />} />
           <Route path="/terms-and-conditions" element={<Terms />} />
