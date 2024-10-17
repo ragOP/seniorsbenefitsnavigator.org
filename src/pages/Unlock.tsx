@@ -497,7 +497,8 @@ const handleQuizN = () => {
               <div className="main-des-title-6-7">
             
                 <b>
-                Seniors On Medicare Can Unlock Upto $900 Monthly Food Allowance This Week!
+          
+			Seniors On Medicare Can Unlock Their Food Allowance Worth Upto $900 This Week!
                 </b>
               </div>
               {/* <img className='topic-img-larger' src = {Headline} alt = "head"/> */}
