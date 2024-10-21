@@ -22,326 +22,18 @@ TagManager.initialize(tagManagerArgs);
 
 export default function Bg() {
 
-  const SlideUp = cssTransition({
-    enter: "toast-enter",
-    exit: "toast-exit",
-  });
-  
-  const messages = [
-    "Emily A. Rodriguez from Miami, FL just qualified for a $3,600 Grocery Allowance.",
-    "Michael D. Johnson from Dallas, TX just qualified for a $3,600 Grocery Allowance.",
-    "Sophia L. Thompson from Los Angeles, CA just qualified for a $3,600 Grocery Allowance.",
-    "Ethan M. Baker from Chicago, IL just qualified for a $3,600 Grocery Allowance.",
-    "Ava K. Campbell from Seattle, WA just qualified for a $3,600 Grocery Allowance."
-  ];
-  
-  // Function to shuffle array in place
-  const shuffleArray = (array:any) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  };
-  
-  shuffleArray(messages);
-  
-  const notify = (message:any) => {
-    // Dismiss all existing toasts
-    toast.dismiss();
-    let boldedMessage = message;
-  
-    // Make the word "Allowance" bold in all lines
-    boldedMessage = boldedMessage.replace(
-      /\$3,600 Grocery Allowance/g,
-      '<strong class="green-bold">$3,600 Grocery Allowance</strong>'
-    );
-  
-    // Make specific dollar amounts bold only in specific lines
-    const specialAmounts = ["$16,800", "$16,800", "$16,800", "$16,800"];
-    specialAmounts.forEach((amount) => {
-      if (message.includes(amount)) {
-        boldedMessage = boldedMessage.replace(
-          amount,
-          `<strong class="green-bold">${amount}</strong>`
-        );
-      }
-    });
-  
-    // Show new toast
-    toast(<div dangerouslySetInnerHTML={{ __html: boldedMessage }} />, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      closeButton: false,
-    });
-  };
-  
-  useEffect(() => {
-    const delayedEffect = setTimeout(() => {
-      // Create a function to handle the logic
-      const showRandomToast = () => {
-        const randomTime = 6000;
-        const randomMessage =
-          messages[Math.floor(Math.random() * messages.length)];
-        notify(randomMessage);
-        return randomTime;
-      };
-  
-      // Show the first toast
-      let nextTime = showRandomToast();
-  
-      // Set up a recurring timer
-      const timer = setInterval(() => {
-        nextTime = showRandomToast();
-      }, nextTime);
-  
-      // Cleanup
-      return () => {
-        clearInterval(timer);
-      };
-    }, 6000); // 6-second delay before the useEffect code runs
-  
-    // Cleanup for the setTimeout
-    return () => {
-      clearTimeout(delayedEffect);
-    };
-  }, []);
-  
-  // const [zipCode, setZipCode] = useState("");
-  // useEffect(() => {
-  //   const fetchUserLocation = async () => {
-  //     try {
-  //       const response = await axios.get("https://ipapi.co/json/");
-  //       console.log('response',response.data);
-  //       setZipCode(response.data.postal);
-  //     } catch (error) {
-  //       console.error("Error fetching user location:", error);
-  //     }
-  //   };
 
-  //   fetchUserLocation();
-  // }, []);
   useEffect(() => {
     window.document.title = "Seniors Saving Journal";
 
-    axios
-      .get(process.env.REACT_APP_PROXY + `/visits/8`)
-      .then(({ data }) => {
-        if (data.length === 0) {
-          const visits = {
-            visits: 1,
-            views: 0,
-            calls: 0,
-            positives: 0,
-            negatives: 0,
-          };
-
-          axios
-            .post(
-              process.env.REACT_APP_PROXY + `/visits/create-visits8`,
-              visits
-            )
-            .catch((err) => console.log(err));
-        } else {
-          const _id = data[0]._id;
-          const _visits = data[0].visits;
-          const _views = data[0].views;
-          const _calls = data[0].calls;
-          const _positives = data[0].positives;
-          const _negatives = data[0].negatives;
-
-          const visits = {
-            visits: _visits + 1,
-            views: _views,
-            calls: _calls,
-            positives: _positives,
-            negatives: _negatives,
-          };
-          axios
-            .put(
-              process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-              visits
-            )
-            .catch((err) => console.log(err));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    
   }, []);
 
   const handleCall = () => {
-    axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-      const _id = data[0]._id;
-      const _visits = data[0].visits;
-      const _views = data[0].views;
-      const _calls = data[0].calls;
-      const _positives = data[0].positives;
-      const _negatives = data[0].negatives;
-      const visits = {
-        visits: _visits,
-        views: _views,
-        calls: _calls + 1,
-        positives: _positives,
-        negatives: _negatives,
-      };
-      axios
-        .put(
-          process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-          visits
-        )
-        .catch((err) => console.log(err));
-    });
+  
   };
 
-//   const [quiz, setQuiz] = useState("Select Your Age:  ");
-//   const [step, setStep] = useState("process");
-//   const [min, setMin] = useState(3);
-//   const [second, setSecond] = useState<any>(0);
-//   const [yes,setYes]=useState("55-64")
-//   const [no,setNo]=useState("65-74")
-//   const [third,setThird]=useState("75+")
-//   const [fourth, setFourth] = useState("Under 55");
-  
 
-//   const stepProcess = () => {
-//     if (step === "Reviewing Your Answers...") {
-//       setTimeout(() => {
-//         setStep("Matching With Best Options...");
-//       }, 1500);
-//     }
-//     if (step === "Matching With Best Options...") {
-//       setTimeout(() => {
-//         setStep("Confirming Eligibility...");
-//       }, 1500);
-//     }
-//     if (step === "Confirming Eligibility...") {
-//       setTimeout(() => {
-//         setStep("completed");
-
-//         axios
-//           .get(process.env.REACT_APP_PROXY + `/visits/8`)
-//           .then(({ data }) => {
-//             const _id = data[0]._id;
-//             const _visits = data[0].visits;
-//             const _views = data[0].views;
-//             const _calls = data[0].calls;
-//             const _positives = data[0].positives;
-//             const _negatives = data[0].negatives;
-//             const visits = {
-//               visits: _visits,
-//               views: _views + 1,
-//               calls: _calls,
-//               positives: _positives,
-//               negatives: _negatives,
-//             };
-//             axios
-//               .put(
-//                 process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-//                 visits
-//               )
-//               .catch((err) => console.log(err));
-//           });
-//       }, 1500);
-//     }
-
-//     if (step === "completed") {
-//       const startTime: any = new Date();
-//       const timer = setInterval(() => {
-//         const nowTime: any = new Date();
-//         setSecond((180 - Math.round((nowTime - startTime) / 1000)) % 60);
-//         setMin(
-//           Math.floor((180 - Math.round((nowTime - startTime) / 1000)) / 60)
-//         );
-//       }, 1000);
-//     }
-//   };
-
-//   useEffect(() => {
-//     stepProcess();
-//   }, [step]);
-
-//   const topScroll = (id: any) => {
-//     scrollTo({ id });
-//   };
-
-//   const handleQuizP = () => {
-//     topScroll("btn");
-//     if (quiz === "Select Your Age:  ") {
-//       setYes("Yes")
-//       setNo("No")
-//       setThird("Skip")
-//       setFourth("No");
-      
-//       setQuiz("Are you on Medicare Parts A & B?");
-//     } else {
-//       setStep("Reviewing Your Answers...");
-     
-//       topScroll("top");
-//     }
-
-//     axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-//       const _id = data[0]._id;
-//       const _visits = data[0].visits;
-//       const _views = data[0].views;
-//       const _calls = data[0].calls;
-//       const _positives = data[0].positives;
-//       const _negatives = data[0].negatives;
-//       const visits = {
-//         visits: _visits,
-//         views: _views,
-//         calls: _calls,
-//         positives: _positives + 1,
-//         negatives: _negatives,
-//       };
-//       axios
-//         .put(
-//           process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-//           visits
-//         )
-//         .catch((err) => console.log(err));
-//     });
-//   };
-
-//   const handleQuizN = () => {
-//     topScroll("btn");
-//     if (quiz === "Are you over the age of 60?  ") {
-//       setYes("Yes")
-//       setNo("No")
-//       setThird("Skip")
-//       setFourth("Skip");
-//       setQuiz("Are you on Medicare Parts A & B?");
-//     } else {
-//       setStep("Reviewing Your Answers...");
-    
-//       topScroll("top");
-//     }
-
-//     axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-//       const _id = data[0]._id;
-//       const _visits = data[0].visits;
-//       const _views = data[0].views;
-//       const _calls = data[0].calls;
-//       const _positives = data[0].positives;
-//       const _negatives = data[0].negatives;
-//       const visits = {
-//         visits: _visits,
-//         views: _views,
-//         calls: _calls,
-//         positives: _positives,
-//         negatives: _negatives + 1,
-//       };
-//       axios
-//         .put(
-//           process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-//           visits
-//         )
-//         .catch((err) => console.log(err));
-//     });
-//   };
 const [quiz, setQuiz] = useState("Are you over the age of 64?  ");
 const [step, setStep] = useState("process");
 const [min, setMin] = useState(3);
@@ -365,29 +57,7 @@ const stepProcess = () => {
     setTimeout(() => {
       setStep("completed");
 
-      axios
-        .get(process.env.REACT_APP_PROXY + `/visits/8`)
-        .then(({ data }) => {
-          const _id = data[0]._id;
-          const _visits = data[0].visits;
-          const _views = data[0].views;
-          const _calls = data[0].calls;
-          const _positives = data[0].positives;
-          const _negatives = data[0].negatives;
-          const visits = {
-            visits: _visits,
-            views: _views + 1,
-            calls: _calls,
-            positives: _positives,
-            negatives: _negatives,
-          };
-          axios
-            .put(
-              process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-              visits
-            )
-            .catch((err) => console.log(err));
-        });
+     
     }, 1500);
   }
 
@@ -423,27 +93,7 @@ const handleQuizP = () => {
     topScroll("top");
   }
 
-  axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-    const _id = data[0]._id;
-    const _visits = data[0].visits;
-    const _views = data[0].views;
-    const _calls = data[0].calls;
-    const _positives = data[0].positives;
-    const _negatives = data[0].negatives;
-    const visits = {
-      visits: _visits,
-      views: _views,
-      calls: _calls,
-      positives: _positives + 1,
-      negatives: _negatives,
-    };
-    axios
-      .put(
-        process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-        visits
-      )
-      .catch((err) => console.log(err));
-  });
+
 };
 
 const handleQuizN = () => {
@@ -458,27 +108,7 @@ const handleQuizN = () => {
     topScroll("top");
   }
 
-  axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-    const _id = data[0]._id;
-    const _visits = data[0].visits;
-    const _views = data[0].views;
-    const _calls = data[0].calls;
-    const _positives = data[0].positives;
-    const _negatives = data[0].negatives;
-    const visits = {
-      visits: _visits,
-      views: _views,
-      calls: _calls,
-      positives: _positives,
-      negatives: _negatives + 1,
-    };
-    axios
-      .put(
-        process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-        visits
-      )
-      .catch((err) => console.log(err));
-  });
+
 };
 
   return (
@@ -600,16 +230,7 @@ const handleQuizN = () => {
 <p>G2 Licensed Agent : Gregory K. Teipelz</p>
         {/* <p>{zipCode} </p> */}
       </div>
-      {/* <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      /> */}
+      
     </div>
   );
 }

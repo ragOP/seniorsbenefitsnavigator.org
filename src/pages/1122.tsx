@@ -21,179 +21,16 @@ const tagManagerArgs = {
 
 export default function Abc() {
 
-  const SlideUp = cssTransition({
-    enter: "toast-enter",
-    exit: "toast-exit",
-  });
+     
   
-  const messages = [
-    "Emily A. Rodriguez from Miami, FL just qualified for a $3,900 Food Allowance.",
-    "Michael D. Johnson from Dallas, TX just qualified for a $3,900 Food Allowance.",
-    "Sophia L. Thompson from Los Angeles, CA just qualified for a $3,900 Food Allowance.",
-    "Ethan M. Baker from Chicago, IL just qualified for a $3,900 Food Allowance.",
-    "Ava K. Campbell from Seattle, WA just qualified for a $3,900 Food Allowance."
-  ];
-  
-  // Function to shuffle array in place
-  const shuffleArray = (array:any) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  };
-  
-  shuffleArray(messages);
-  
-  const notify = (message:any) => {
-    // Dismiss all existing toasts
-    toast.dismiss();
-    let boldedMessage = message;
-  
-    // Make the word "Allowance" bold in all lines
-    boldedMessage = boldedMessage.replace(
-      /\$3,900 Food Allowance/g,
-      '<strong class="green-bold">$3300 Food Allowance</strong>'
-    );
-  
-    // Make specific dollar amounts bold only in specific lines
-    const specialAmounts = ["$16,800", "$16,800", "$16,800", "$16,800"];
-    specialAmounts.forEach((amount) => {
-      if (message.includes(amount)) {
-        boldedMessage = boldedMessage.replace(
-          amount,
-          `<strong class="green-bold">${amount}</strong>`
-        );
-      }
-    });
-  
-    // Show new toast
-    toast(<div dangerouslySetInnerHTML={{ __html: boldedMessage }} />, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      closeButton: false,
-    });
-  };
-  
-  useEffect(() => {
-    const delayedEffect = setTimeout(() => {
-      // Create a function to handle the logic
-      const showRandomToast = () => {
-        const randomTime = 20000;
-        const randomMessage =
-          messages[Math.floor(Math.random() * messages.length)];
-        notify(randomMessage);
-        return randomTime;
-      };
-  
-      // Show the first toast
-      let nextTime = showRandomToast();
-  
-      // Set up a recurring timer
-      const timer = setInterval(() => {
-        nextTime = showRandomToast();
-      }, nextTime);
-  
-      // Cleanup
-      return () => {
-        clearInterval(timer);
-      };
-    }, 20000); // 6-second delay before the useEffect code runs
-  
-    // Cleanup for the setTimeout
-    return () => {
-      clearTimeout(delayedEffect);
-    };
-  }, []);
-  
-  // const [zipCode, setZipCode] = useState("");
-  // useEffect(() => {
-  //   const fetchUserLocation = async () => {
-  //     try {
-  //       const response = await axios.get("https://ipapi.co/json/");
-  //       console.log('response',response.data);
-  //       setZipCode(response.data.postal);
-  //     } catch (error) {
-  //       console.error("Error fetching user location:", error);
-  //     }
-  //   };
-
-  //   fetchUserLocation();
-  // }, []);
   useEffect(() => {
     window.document.title = "Seniors Saving Journal";
 
-    axios
-      .get(process.env.REACT_APP_PROXY + `/visits/8`)
-      .then(({ data }) => {
-        if (data.length === 0) {
-          const visits = {
-            visits: 1,
-            views: 0,
-            calls: 0,
-            positives: 0,
-            negatives: 0,
-          };
-
-          axios
-            .post(
-              process.env.REACT_APP_PROXY + `/visits/create-visits8`,
-              visits
-            )
-            .catch((err) => console.log(err));
-        } else {
-          const _id = data[0]._id;
-          const _visits = data[0].visits;
-          const _views = data[0].views;
-          const _calls = data[0].calls;
-          const _positives = data[0].positives;
-          const _negatives = data[0].negatives;
-
-          const visits = {
-            visits: _visits + 1,
-            views: _views,
-            calls: _calls,
-            positives: _positives,
-            negatives: _negatives,
-          };
-          axios
-            .put(
-              process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-              visits
-            )
-            .catch((err) => console.log(err));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+ 
   }, []);
 
   const handleCall = () => {
-    axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-      const _id = data[0]._id;
-      const _visits = data[0].visits;
-      const _views = data[0].views;
-      const _calls = data[0].calls;
-      const _positives = data[0].positives;
-      const _negatives = data[0].negatives;
-      const visits = {
-        visits: _visits,
-        views: _views,
-        calls: _calls + 1,
-        positives: _positives,
-        negatives: _negatives,
-      };
-      axios
-        .put(
-          process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-          visits
-        )
-        .catch((err) => console.log(err));
-    });
+
   };
 
   const [quiz, setQuiz] = useState("Are you over the age of 64?  ");
@@ -219,29 +56,7 @@ export default function Abc() {
       setTimeout(() => {
         setStep("completed");
 
-        axios
-          .get(process.env.REACT_APP_PROXY + `/visits/8`)
-          .then(({ data }) => {
-            const _id = data[0]._id;
-            const _visits = data[0].visits;
-            const _views = data[0].views;
-            const _calls = data[0].calls;
-            const _positives = data[0].positives;
-            const _negatives = data[0].negatives;
-            const visits = {
-              visits: _visits,
-              views: _views + 1,
-              calls: _calls,
-              positives: _positives,
-              negatives: _negatives,
-            };
-            axios
-              .put(
-                process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-                visits
-              )
-              .catch((err) => console.log(err));
-          });
+       
       }, 1500);
     }
 
@@ -277,27 +92,7 @@ export default function Abc() {
       topScroll("top");
     }
 
-    axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-      const _id = data[0]._id;
-      const _visits = data[0].visits;
-      const _views = data[0].views;
-      const _calls = data[0].calls;
-      const _positives = data[0].positives;
-      const _negatives = data[0].negatives;
-      const visits = {
-        visits: _visits,
-        views: _views,
-        calls: _calls,
-        positives: _positives + 1,
-        negatives: _negatives,
-      };
-      axios
-        .put(
-          process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-          visits
-        )
-        .catch((err) => console.log(err));
-    });
+   
   };
 
   const handleQuizN = () => {
@@ -312,27 +107,7 @@ export default function Abc() {
       topScroll("top");
     }
 
-    axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
-      const _id = data[0]._id;
-      const _visits = data[0].visits;
-      const _views = data[0].views;
-      const _calls = data[0].calls;
-      const _positives = data[0].positives;
-      const _negatives = data[0].negatives;
-      const visits = {
-        visits: _visits,
-        views: _views,
-        calls: _calls,
-        positives: _positives,
-        negatives: _negatives + 1,
-      };
-      axios
-        .put(
-          process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
-          visits
-        )
-        .catch((err) => console.log(err));
-    });
+
   };
 
   return (
@@ -428,16 +203,7 @@ export default function Abc() {
 <p>G2 Licensed Agent : Gregory K. Teipel</p>
         {/* <p>{zipCode} </p> */}
       </div>
-      {/* <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      /> */}
+     
     </div>
   );
 }
