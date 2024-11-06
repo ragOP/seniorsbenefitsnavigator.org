@@ -41,7 +41,7 @@ import Congrats from './pages/Congrats';
 import Unlock from './pages/Unlock';
 import Bg from './pages/sfmed_bg';
 import SFmedi from './pages/sfmed';
-
+import Ths from './pages/Ths';
 function App() {
  
   return (
@@ -51,7 +51,7 @@ function App() {
         <Routes>
        
 
-
+  <Route path = "/engmed-ths" element = {<Ths/>} />
           <Route path = "/engmed-tsf" element = {<Tsf/>} />
           
           <Route  path="/sfmedi-bg"  element = {< Bg/>} />
