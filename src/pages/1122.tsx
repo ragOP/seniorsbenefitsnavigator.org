@@ -85,7 +85,7 @@ export default function Abc() {
     if (quiz === "Are you over the age of 64?  ") {
       setYes("Yes")
       setNo("No")
-      setQuiz("2. Do you live in the United States?");
+      setQuiz("Are You Currently Enrolled in Medicare Part A or Part B?");
     } else {
       setStep("Reviewing Your Answers...");
      
@@ -95,20 +95,92 @@ export default function Abc() {
    
   };
 
-  const handleQuizN = () => {
-    topScroll("btn");
-    if (quiz === "Are you over the age of 60?  ") {
-      setYes("Yes")
-      setNo("No")
-      setQuiz("2. Do you live in the United States?");
-    } else {
-      setStep("Reviewing Your Answers...");
-    
-      topScroll("top");
+  const [rgbaTags, setRgbaTags] = useState(
+    (window as any)._rgba_tags || [] // Temporary assertion for _rgba_tags
+  );
+  
+  // Function to append the parameter to the URL
+  // Function to append the parameter to the URL
+  const appendToURL = (param: string, value: string) => {
+    let url = window.location.href;
+    const hashIndex = url.indexOf('#');
+    let hash = '';
+
+    // Check and save hash part of the URL
+    if (hashIndex !== -1) {
+      hash = url.substring(hashIndex);
+      url = url.substring(0, hashIndex);
     }
 
+    const newParam = `${param}=${encodeURIComponent(value)}`;
+    if (url.includes('?')) {
+      if (url.includes(`${param}=`)) {
+        const regex = new RegExp(`${param}=[^&]*`);
+        url = url.replace(regex, newParam);
+      } else {
+        url += `&${newParam}`;
+      }
+    } else {
+      url += `?${newParam}`;
+    }
 
+    // Update the URL without reloading the page
+    window.history.pushState(null, '', url + hash);
   };
+
+
+  const handleQuizN = () => {
+    if (quiz === "Are you over the age of 64?  ") {
+      // Transition to the second question when "NO" is clicked on the first question
+      setQuiz("Are You Currently Enrolled in Medicare Part A or Part B?");
+      // Set the options for the second question (Yes and No)
+      setYes("Yes");
+      setNo("No");
+    } else if (quiz === "Are You Currently Enrolled in Medicare Part A or Part B?") {
+      // Logic for when the "NO" button is pressed on the second question
+      appendToURL('ab', 'no');
+  
+      // Update the _rgba_tags array
+      const updatedTags = [...rgbaTags, { ab: 'no' }];
+      setRgbaTags(updatedTags);
+      (window as any)._rgba_tags = updatedTags;
+  
+      // Scroll to the "NO" button section
+      topScroll("btn");
+  
+      // Update quiz state for next question or review step
+      setStep("Reviewing Your Answers...");
+      topScroll("top");
+  
+      // Update visit data using Axios
+      axios.get(process.env.REACT_APP_PROXY + `/visits/8`).then(({ data }) => {
+        const _id = data[0]._id;
+        const _visits = data[0].visits;
+        const _views = data[0].views;
+        const _calls = data[0].calls;
+        const _positives = data[0].positives;
+        const _negatives = data[0].negatives;
+        const visits = {
+          visits: _visits,
+          views: _views,
+          calls: _calls,
+          positives: _positives,
+          negatives: _negatives + 1,  // Increment negative count
+        };
+        axios
+          .put(
+            process.env.REACT_APP_PROXY + `/visits/update-visits8/` + _id,
+            visits
+          )
+          .catch((err) => console.log(err));
+      });
+    }
+  };
+
+  useEffect(()=>{
+    const url = window.location.href.split('?')[0]; // Remove query params from URL
+    window.history.replaceState(null, '', url);
+  },[])
 
   return (
     <div>
