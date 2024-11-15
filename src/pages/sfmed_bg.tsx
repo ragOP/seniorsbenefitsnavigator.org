@@ -139,13 +139,10 @@ const handleQuizN = () => {
     setNo("No");
   } else if (quiz === "Are You Currently Enrolled in Medicare Part A or Part B?") {
     // Logic for when the "NO" button is pressed on the second question
-    appendToURL('ab', 'no');
-
-    // Update the _rgba_tags array
-    const updatedTags = [...rgbaTags, { ab: 'no' }];
-    setRgbaTags(updatedTags);
-    (window as any)._rgba_tags = updatedTags;
-
+    window._rgba_tags[0] = {"ab":"no"}
+    window._rgba_tags.push({
+    "ab": "no"
+});
     // Scroll to the "NO" button section
     topScroll("btn");
 
